@@ -1,0 +1,9 @@
+.idea/
+
+.DS_Store
+
+# Compilation
+producer/producer
+consumer/consumer
+
+docker/

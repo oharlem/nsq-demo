@@ -1,0 +1,38 @@
+version: '2'
+
+services:
+
+  dynamodb:
+    container_name: mysql
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - "./docker/data/dynamodb/db:/var/lib/mysql"
+
+  nsqlookupd:
+    container_name: nsqlookupd
+    image: nsqio/nsq
+    command: /nsqlookupd
+    ports:
+      - "4160:4160"
+      - "4161:4161"
+
+  nsqd:
+    container_name: nsqd
+    image: nsqio/nsq
+    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160 --mem-queue-size=1000000 --data-path=/data
+    ports:
+      - "4150:4150"
+      - "4151:4151"
+    volumes:
+      - "./docker/data/nsqd:/data"
+
+  nsqadmin:
+    container_name: nsqadmin
+    image: nsqio/nsq
+    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+    ports:
+      - "4171:4171"
